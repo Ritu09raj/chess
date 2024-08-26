@@ -1,0 +1,93 @@
+class ChessGame:
+    def __init__(self):
+        self.board = self.initialize_board()
+        self.current_player = "white"
+
+    def initialize_board(self):
+        # Initialize an 8x8 board with pieces in their starting positions
+        board = []
+        for i in range(8):
+            row = []
+            for j in range(8):
+                if i == 1:
+                    row.append("bp")  # black pawn
+                elif i == 6:
+                    row.append("wp")  # white pawn
+                elif i == 0:
+                    if j == 0 or j == 7:
+                        row.append("br")  # black rook
+                    elif j == 1 or j == 6:
+                        row.append("bn")  # black knight
+                    elif j == 2 or j == 5:
+                        row.append("bb")  # black bishop
+                    elif j == 3:
+                        row.append("bq")  # black queen
+                    elif j == 4:
+                        row.append("bk")  # black king
+                elif i == 7:
+                    if j == 0 or j == 7:
+                        row.append("wr")  # white rook
+                    elif j == 1 or j == 6:
+                        row.append("wn")  # white knight
+                    elif j == 2 or j == 5:
+                        row.append("wb")  # white bishop
+                    elif j == 3:
+                        row.append("wq")  # white queen
+                    elif j == 4:
+                        row.append("wk")  # white king
+                else:
+                    row.append("-")  # empty space
+            board.append(row)
+        return board
+
+    def print_board(self):
+        print("  a b c d e f g h")
+        for i, row in enumerate(self.board):
+            print(i + 1, end=" ")
+            for piece in row:
+                print(piece, end=" ")
+            print()
+
+    def is_valid_move(self, start, end):
+        # Check if the move is within the board boundaries
+        if start[0] < 0 or start[0] >= 8 or start[1] < 0 or start[1] >= 8:
+            return False
+        if end[0] < 0 or end[0] >= 8 or end[1] < 0 or end[1] >= 8:
+            return False
+
+        # Check if the start position contains a piece of the current player
+        piece = self.board[start[0]][start[1]]
+        if piece[0]!= self.current_player[0]:
+            return False
+
+        # Check if the end position is empty or contains an opponent's piece
+        if self.board[end[0]][end[1]][0] == self.current_player[0]:
+            return False
+
+        # Check if the move is a valid move for the piece
+        if piece == "wp" or piece == "bp":  # pawn
+            if start[1] == end[1] and (end[0] == start[0] + 1 or end[0] == start[0] - 1):
+                return True
+        elif piece == "wr" or piece == "br":  # rook
+            if start[0] == end[0] or start[1] == end[1]:
+                return True
+        elif piece == "wn" or piece == "bn":  # knight
+            if abs(start[0] - end[0]) == 2 and abs(start[1] - end[1]) == 1:
+                return True
+            if abs(start[0] - end[0]) == 1 and abs(start[1] - end[1]) == 2:
+                return True
+        elif piece == "wb" or piece == "bb":  # bishop
+            if abs(start[0] - end[0]) == abs(start[1] - end[1]):
+                return True
+        elif piece == "wq" or piece == "bq":  # queen
+            if start[0] == end[0] or start[1] == end[1] or abs(start[0] - end[0]) == abs(start[1] - end[1]):
+                return True
+        elif piece == "wk" or piece == "bk":  # king
+            if abs(start[0] - end[0]) <= 1 and abs(start[1] - end[1]) <= 1:
+                return True
+
+        return False
+
+    def make_move(self, start, end):
+        if self.is_valid_move(start, end):
+            self
